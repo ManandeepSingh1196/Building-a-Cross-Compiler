@@ -12,7 +12,6 @@ BINUTILS_VER="${BINUTILS_VER:-2.43}"
 GCC_VER="${GCC_VER:-14.2.0}"
 
 # HELPERS
-
 RED='\033[0;31m'; GREEN='\033[0;32m'; CYAN='\033[0;36m'; RESET='\033[0m'
 
 info()    { echo -e "${CYAN}[*] $*${RESET}"; }
@@ -20,10 +19,8 @@ success() { echo -e "${GREEN}[✓] $*${RESET}"; }
 die()     { echo -e "${RED}[✗] $*${RESET}" >&2; exit 1; }
 
 # CHECK DEPENDENCIES
-
 check_dependencies ()
-{ info "Checking Dependencies.. "
-    local missing=()
+{ info "Checking Dependencies.. " local missing=()
 
     for cmd in gcc g++ make wget tar bison flex; do
         command -v "$cmd" &>/dev/null || missing+=("$cmd")
@@ -40,7 +37,6 @@ check_dependencies ()
 }
 
 # Download Sources
-#
 download_sources()
 {
     info "Downloading Sources.. "
@@ -55,8 +51,7 @@ download_sources()
 
     [[ -f "$GCC_TAR" ]] || wget -q --show-progress \
         "https://ftp.gnu.org/gnu/gcc/gcc-${GCC_VER}/${GCC_TAR}"
-
-    [[ -d "binutils-${BINUTILS_VER}" ]]   || tar xf "$BINUTILS_TAR"
+[[ -d "binutils-${BINUTILS_VER}" ]]   || tar xf "$BINUTILS_TAR"
     [[ -d "gcc-${GCC_VER}" ]]             || tar xf "$GCC_TAR"
 
     success "Sources ready."
