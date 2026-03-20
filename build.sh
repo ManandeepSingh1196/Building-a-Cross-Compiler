@@ -1,5 +1,3 @@
-#
-
 #!/usr/bin/env bash
 set -euo pipefail
 
@@ -8,9 +6,9 @@ set -euo pipefail
 TARGET="x86_64-elf"
 PREFIX="$HOME/opt/cross"
 SRCDIR="$HOME/src/cross-toolchain"
-$PKG_MGR="pacman"
+PKG_MGR="pacman"
 
-BINUTILS_VER="${BINUTILS_VER:2.43}"
+BINUTILS_VER="${BINUTILS_VER:-2.43}"
 GCC_VER="${GCC_VER:-14.2.0}"
 
 # HELPERS
@@ -28,14 +26,14 @@ check_dependencies ()
     local missing=()
 
     for cmd in gcc g++ make wget tar bison flex; do
-        command -v "$cmd" &>/dev/null || missing+=("$pkg")
+        command -v "$cmd" &>/dev/null || missing+=("$cmd")
     done
 
     for pkg in gmp libmpc mpfr; do
         pacman -Q "$pkg" &>/dev/null || missing+=("$pkg")
     done
 
-    [[ ${#missing[0]} - gt 0 ]] && \
+    [[ ${#missing[@]} -gt 0 ]] && \
         die "Missing: ${missing[*]}\nRun: sudo $PKG_MGR -S base-devel gmp mpc libmpc mpfr"
     
     success "All dependencies present."
@@ -51,15 +49,15 @@ download_sources()
     local BINUTILS_TAR="binutils-${BINUTILS_VER}.tar.xz"
     local GCC_TAR="gcc-${GCC_VER}.tar.xz"
 
-    [[ -f "BINUTILS_TAR" ]] || wget -q --show-progress \
+    [[ -f "$BINUTILS_TAR" ]] || wget -q --show-progress \
         "https://ftp.gnu.org/gnu/binutils/${BINUTILS_TAR}"
 
 
-    [[ -f "GCC_TAR" ]] || wget -q --show-progress \
+    [[ -f "$GCC_TAR" ]] || wget -q --show-progress \
         "https://ftp.gnu.org/gnu/gcc/gcc-${GCC_VER}/${GCC_TAR}"
 
-    [[ -d "binutils-${BINUTILS_VER}" ]] || tar xf "BINUTILS_TAR"
-    [[ -d "gcc-${BINUTILS_VER}" ]]      || tar xf "GCC_TAR"
+    [[ -d "binutils-${BINUTILS_VER}" ]]   || tar xf "$BINUTILS_TAR"
+    [[ -d "gcc-${GCC_VER}" ]]             || tar xf "$GCC_TAR"
 
     success "Sources ready."
 }
@@ -137,7 +135,7 @@ main ()
     info "Build script for a x86_64-elf cross compiler."
     info "binutils ${BINUTILS_VER} | GCC ${GCC_VER} | prefix:$PREFIX"
 
-    check_deps
+    check_dependencies
     download_sources
     build_binutils
     build_gcc
