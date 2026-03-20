@@ -8,8 +8,8 @@ PREFIX="$HOME/opt/cross"
 SRCDIR="$HOME/src/cross-toolchain"
 PKG_MGR="pacman"
 
-BINUTILS_VER="${BINUTILS_VER:-2.43}"
-GCC_VER="${GCC_VER:-14.2.0}"
+BINUTILS_VER="${BINUTILS_VER:-2.46.0}"
+GCC_VER="${GCC_VER:-15.2.0}"
 
 # HELPERS
 RED='\033[0;31m'; GREEN='\033[0;32m'; CYAN='\033[0;36m'; RESET='\033[0m'
@@ -127,7 +127,7 @@ verify()
 # MAIN 
 main ()
 {
-    info "Build script for a x86_64-elf cross compiler."
+    info "Build script for a ${TARGET} cross compiler."
     info "binutils ${BINUTILS_VER} | GCC ${GCC_VER} | prefix:$PREFIX"
 
     check_dependencies
